@@ -1,0 +1,79 @@
+
+@import 'bourbon/bourbon';
+@import 'neat/neat';
+
+@import 'base/breakpoints';
+@import 'base/variables';
+@import 'base/base';
+
+$color-nav-bg: #222222;
+$color-nav-link: #75757D;
+$color-nav-link-hover: #F6F6F6;
+$color-border: #E7E7E7;
+body, html {
+  margin: 0;
+}
+
+.nav {
+  width: 100%;
+  position: fixed;
+  background-color: $color-nav-bg;
+  color: $color-nav-link;
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    li {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      &.brand {
+        float: left;
+      }
+      &.link {
+        float: right;
+        cursor: pointer;
+
+        &:hover {
+          color: $color-nav-link-hover;
+        }
+      }
+    }
+  }
+}
+
+
+.application {
+  margin-top: 2rem;
+  .title {
+    font-size: 1.5rem;
+  }
+  .info {
+    border-radius: 5px;
+    border: 1px solid $color-border;
+    padding: 1rem;
+    .detail {
+      font-size: 0.8rem;
+    }
+  }
+  .boundary {
+    margin-top: 1rem;
+    display: inline-block;
+    .boundary-title {
+      font-size: 1rem;
+      display: block;
+      .version {
+        font-size: 0.8rem;
+      }
+    }
+    .boundary-icon {
+    }
+    .boundary-detail {
+      display: inline-block;
+      vertical-align: top;
+    }
+  }
+}
+
+.content {
+  padding-top: 5rem;
+}

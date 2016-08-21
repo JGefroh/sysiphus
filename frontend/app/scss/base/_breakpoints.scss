@@ -1,0 +1,8 @@
+$tiny-size: 450px;
+$mobile-size: 768px;
+
+    // Bourbon Neat Breakpoints
+$mobile: new-breakpoint(min-width $mobile-size 12);
+
+$tiny: new-breakpoint(max-width $tiny-size 12);
+$mobile: new-breakpoint(max-width $mobile-size 12);

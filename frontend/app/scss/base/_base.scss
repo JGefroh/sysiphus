@@ -1,0 +1,62 @@
+* {
+  font-family: $font;
+  font-weight: $font-weight;
+  line-height: 1.5em;
+}
+a {
+  color: $link-color-unvisited;
+  text-decoration: underline;
+  &:hover {
+    text-decoration: underline;
+  }
+  &:visited {
+    color: $link-color-visited;
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  font-weight: normal;
+}
+
+h1 {font-size: 2.2rem;}
+h2 {font-size: 2rem;}
+h3 {font-size: 1.8rem;}
+h4 {font-size: 1.6rem;}
+h5 {font-size: 1.4rem;}
+h6 {font-size: 1.2rem;}
+
+hr {
+  border-color: $color-light-grey;
+  background-color: $color-light-grey;
+  display: block;
+  height: 1px;
+  border: 0;
+  margin: 1em 0;
+  padding: 0; ;
+}
+
+.content {
+  margin: 0;
+  padding: 1rem;
+  @include outer-container();
+}
+
+.row {
+  @include row();
+}
+
+
+.hide-when-mobile {
+  @include media($mobile) {
+    display: none;
+  }
+}
+
+.right {
+  float: right;
+}
+
+.subtle {
+  color: $color-grey;
+}
