@@ -4,79 +4,112 @@ const router = express.Router();
 const exec = require('child_process').exec;
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-io.on('connection', function(client) {
-  client.on('status:get', function(fromClient) {
-    if (fromClient.url) {
-      var child = exec("curl --verbose -s -w \"\n___STARTTIME___%{time_total}___ENDTIME___\" \"" + fromClient.url + '\"');
-      var data = '';
-      child.stderr.on('data', function(curlResult) {
-        if (curlResult) {
-          data += curlResult;
-        }
-      });
-      child.stdout.on('data', function(curlResult) {
-        if (curlResult) {
-          data += curlResult;
-        }
-      });
-      child.on('close', function() {
-        var secondary = exec("curl " + fromClient.url + "/sysiphus.php");
-        var secondaryData = '';
-        secondary.stdout.on("data", function(curlResult) {
-          secondaryData += curlResult;
-        });
-        secondary.on("close", function(curlResult) {
-          var secondaryJson = {};
-          if (secondaryData.indexOf('sysiphus-status') !== -1) {
-            secondaryJson = JSON.parse(secondaryData);
-          }
-          var result = {
-            url: fromClient.url,
-            lastUpdated: new Date(),
-            timeTaken: getTimeTaken(data),
-            server: getServer(data),
-            up: data.indexOf('Could not resolve host') === -1,
-            verified: data.indexOf(fromClient.verification) !== -1,
-            ip: getIP(data),
-            disk_used_in_bytes: secondaryJson.disk_used_in_bytes,
-            disk_free_in_bytes: secondaryJson.disk_free_in_bytes,
-            disk_total_in_bytes: secondaryJson.disk_total_in_bytes
-          };
-          client.emit('status:get:result', result);
-        });
+const projects = require('./projects.json')
+var http = require("http");
+var https = require("https");
 
-      });
+
+io.on('connection', function(client) {
+  client.emit('projects:list', projects);
+  client.on('status:get', function(fromClient) {
+    if (!fromClient || !fromClient.id) {
+      return;
     }
-    else {
-      var result = {
-        url: fromClient.url,
-        lastUpdated: new Date(),
-        up: false,
-        verified: false
-      };
-      client.emit('status:get:result', result);
+
+    var server = getServer(fromClient.id);
+    if (!server) {
+      sendFail(client, fromClient.id);
+      return;
+    }
+
+    fetchServer(client, server);
+    if (server.sysiphusUrl) {
+      fetchSysiphus(client, server);
     }
   });
 });
 
-function getServer(data) {
-  if (data.indexOf('< Server: ') !== -1) {
-    var key = '< Server: ';
-    var startAt = data.indexOf(key) + key.length;
-    var endAt = data.indexOf('\n', startAt + 1);
-    return data.substring(startAt, endAt);
+function fetchServer(client, server) {
+  var protocol = server.url.indexOf('https:') === -1 ? http : https;
+  var start = new Date();
+  var request = protocol.get(server.url, function(response) {
+    var data = '';
+    var ip = parseIP(request); //[JG]: Not available if connection is closed.
+    response.on('data', function(chunk) {
+      data += chunk;
+    });
+    response.on('end', function() {
+      var result = {
+        id: server.id,
+        lastUpdated: new Date(),
+        timeTaken: parseTimeTaken(start),
+        server: parseServer(response),
+        up: data.indexOf('Could not resolve host') === -1,
+        verified: data.indexOf(server.verification) !== -1,
+        ip: ip
+      };
+      client.emit('status:get:result', result);
+    })
+  });
+}
+
+function fetchSysiphus(client, server) {
+  var child = exec("curl " + server.sysiphusUrl);
+  var data = '';
+  child.stdout.on("data", function(curlResult) {
+    data += curlResult;
+  });
+  child.on("close", function(curlResult) {
+    var json = {};
+    if (data.indexOf('sysiphus-status') !== -1) {
+      json = JSON.parse(data);
+    }
+    var result = {
+      id: server.id,
+      disk_used_in_bytes: json.disk_used_in_bytes,
+      disk_free_in_bytes: json.disk_free_in_bytes,
+      disk_total_in_bytes: json.disk_total_in_bytes,
+      lastUpdated: new Date()
+    }
+    client.emit('status:get:result', result);
+  });
+}
+
+function sendFail(id) {
+  var result = {
+    id: id,
+    lastUpdated: new Date(),
+    up: false,
+    verified: false
+  };
+  client.emit('status:get:result', result);
+}
+
+function getServer(id) {
+  for (var i = 0; i < projects.length; i++) {
+    var project = projects[i];
+    for (var x = 0; x < project.servers.length; x++) {
+      var server = project.servers[x];
+      if (server.id === id) {
+        return project.servers[x];
+      }
+    }
   }
 }
 
-function getTimeTaken(data) {
-  return data.substring(data.lastIndexOf('___STARTTIME___') + '___STARTTIME___'.length, data.lastIndexOf('___ENDTIME___'));
+function parseServer(response) {
+  return response.headers.server;
 }
 
-function getIP(data) {
-  if (data.indexOf('Trying ') !== -1) {
-    return data.substring(data.indexOf('Trying ') + 'Trying '.length, data.indexOf('...'));
-  }
+function parseTimeTaken(start) {
+  return new Date() - start;
 }
+
+function parseIP(request) {
+  return request.connection.remoteAddress || request.socket.remoteAddress || request.connection.socket.remoteAddress;
+}
+
+
 app.use('/api', router);
 router.get('/', (req, res) => {
 
