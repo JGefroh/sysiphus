@@ -48,6 +48,8 @@ body, html {
     font-size: 1.5rem;
   }
   .info {
+    @include row();
+
     border-radius: 5px;
     border: 1px solid $color-border;
     padding: 1rem;
@@ -56,6 +58,7 @@ body, html {
     }
   }
   .boundary {
+    @include span-columns(6);
     margin-top: 1rem;
     display: inline-block;
     .boundary-title {

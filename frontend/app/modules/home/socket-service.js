@@ -17,7 +17,7 @@
             verification: 'hnl.io'
           },
           {
-            name: 'Backend',
+            name: 'Backend API',
             icon: 'fa-server',
             url: 'https://api.hnl.io',
             verification: 'this was caused by a bug in the site'
@@ -30,10 +30,16 @@
         liveUrl: 'http://todolist.jgefroh.com',
         servers: [
           {
-            name: 'Application',
+            name: 'Frontend',
             icon: 'fa-server',
             url: 'http://todolist.jgefroh.com',
             verification: 'ToDoList'
+          },
+          {
+            name: 'Backend API',
+            icon: 'fa-server',
+            url: 'http://todolist.jgefroh.com/rest/security',
+            verification: ''
           }
         ]
       },

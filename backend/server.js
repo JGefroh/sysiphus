@@ -20,16 +20,31 @@ io.on('connection', function(client) {
         }
       });
       child.on('close', function() {
-        var result = {
-          url: fromClient.url,
-          lastUpdated: new Date(),
-          timeTaken: getTimeTaken(data),
-          server: getServer(data),
-          up: data.indexOf('Could not resolve host') === -1,
-          verified: data.indexOf(fromClient.verification) !== -1,
-          ip: getIP(data)
-        };
-        client.emit('status:get:result', result);
+        var secondary = exec("curl " + fromClient.url + "/sysiphus.php");
+        var secondaryData = '';
+        secondary.stdout.on("data", function(curlResult) {
+          secondaryData += curlResult;
+        });
+        secondary.on("close", function(curlResult) {
+          var secondaryJson = {};
+          if (secondaryData.indexOf('sysiphus-status') !== -1) {
+            secondaryJson = JSON.parse(secondaryData);
+          }
+          var result = {
+            url: fromClient.url,
+            lastUpdated: new Date(),
+            timeTaken: getTimeTaken(data),
+            server: getServer(data),
+            up: data.indexOf('Could not resolve host') === -1,
+            verified: data.indexOf(fromClient.verification) !== -1,
+            ip: getIP(data),
+            disk_used_in_bytes: secondaryJson.disk_used_in_bytes,
+            disk_free_in_bytes: secondaryJson.disk_free_in_bytes,
+            disk_total_in_bytes: secondaryJson.disk_total_in_bytes
+          };
+          client.emit('status:get:result', result);
+        });
+
       });
     }
     else {

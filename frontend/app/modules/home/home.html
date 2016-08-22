@@ -21,8 +21,6 @@
           <div class="boundary-detail">
             <label class="boundary-title">
               <span data-ng-bind="server.name"></span>
-              <span data-ng-bind="server.ip" class="detail subtle"></span>
-
               <span class="detail subtle">
                 &bull;
                 <span data-ng-if="server.loading"><span class="fa fa-fw fa-spin fa-spinner"></span></span>
@@ -30,13 +28,22 @@
                 <span data-ng-if="!server.loading && server.up && !server.verified" style="color: red;">Verification Failed</span>
                 <span data-ng-if="!server.loading && !server.up" style="color: red;">Offline</span>
               </span><br/>
-              <span class="detail subtle">
-                <span data-ng-if="server.timeTaken">Responded in {{server.timeTaken}}s</span>
-              </span><br/>
             </label>
+            <span data-ng-bind="server.ip" class="detail subtle"></span><br/>
 
             <span class="detail subtle">
               <span>{{server.server}}</span>
+            </span><br/>
+
+            <span class="detail subtle">
+              <span data-ng-if="server.timeTaken">Responded in {{server.timeTaken}}s</span>
+            </span><br/>
+            <span data-ng-if="server.disk_total_in_bytes" class="detail subtle">
+              <span class="fa fa-fw fa-hdd-o"></span>
+              Used {{ (server.disk_used_in_bytes / 1000 / 1000 / 1000).toFixed(1) }} of
+              {{ (server.disk_total_in_bytes / 1000 / 1000/ 1000).toFixed(1) }}gb
+
+              ({{ ((server.disk_used_in_bytes / server.disk_total_in_bytes) * 100).toFixed(0) }}%)
             </span><br/>
           </div>
         </div>
