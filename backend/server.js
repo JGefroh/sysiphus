@@ -50,6 +50,8 @@ function fetchServer(client, server) {
       };
       client.emit('status:get:result', result);
     })
+  }, function() {
+    sendFail(client, server.id);
   });
 }
 
