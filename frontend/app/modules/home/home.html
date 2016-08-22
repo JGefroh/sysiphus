@@ -1,0 +1,46 @@
+<div class="nav">
+  <ul>
+    <li class="brand">Sysiphus</li>
+    <li class="link">Applications</li>
+  </ul>
+</div>
+<div class="content">
+  <div data-ng-repeat="project in vm.projects">
+    <div class="application">
+      <span class="title">
+        <a data-ng-bind="project.name" data-ng-href="{{project.liveUrl}}" style="text-decoration: none;"></a>
+        <a data-ng-if="project.sourceUrl" data-ng-href="{{project.sourceUrl}}"><span class="fa fa-fw fa-lg fa-github"></span></a>
+      </span>
+      <a class="detail subtle"
+         style="font-size: 0.8rem; float: right; cursor: pointer; text-decoration: none;"
+         data-ng-click="vm.syncProject(project);">{{project.lastUpdated | date:'\'Last updated\' h:mm a'}}</a>
+
+      <div class="info">
+        <div class="boundary" data-ng-repeat="server in project.servers">
+          <span class="fa fa-fw fa-4x boundary-icon" data-ng-class="server.icon"></span>
+          <div class="boundary-detail">
+            <label class="boundary-title">
+              <span data-ng-bind="server.name"></span>
+              <span data-ng-bind="server.ip" class="detail subtle"></span>
+
+              <span class="detail subtle">
+                &bull;
+                <span data-ng-if="server.loading"><span class="fa fa-fw fa-spin fa-spinner"></span></span>
+                <span data-ng-if="!server.loading && server.up && server.verified">Online</span>
+                <span data-ng-if="!server.loading && server.up && !server.verified" style="color: red;">Verification Failed</span>
+                <span data-ng-if="!server.loading && !server.up" style="color: red;">Offline</span>
+              </span><br/>
+              <span class="detail subtle">
+                <span data-ng-if="server.timeTaken">Responded in {{server.timeTaken}}s</span>
+              </span><br/>
+            </label>
+
+            <span class="detail subtle">
+              <span>{{server.server}}</span>
+            </span><br/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
