@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const router = express.Router();
 const exec = require('child_process').exec;
+
+const port = process.env.PORT || 8080;
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 const projects = require('./projects.json')
@@ -131,4 +133,4 @@ app.get('/*', (req, res, next) => {
   }
 });
 
-server.listen(8080);
+server.listen(port);
