@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require('body-parser')
 const app = express();
 const router = express.Router();
 const exec = require('child_process').exec;
@@ -9,6 +10,11 @@ var io = require('socket.io')(server);
 const projects = require('./projects.json')
 var http = require("http");
 var https = require("https");
+
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
 
 
 io.on('connection', function(client) {
@@ -117,6 +123,11 @@ function parseIP(request) {
 app.use('/api', router);
 router.get('/', (req, res) => {
 
+});
+
+router.post('/performance_update', (req, res) => {
+  console.info(req.body.disk_used_in_bytes);
+  console.info(req.body.disk_free_in_bytes);
 });
 
 app.use('/', express.static('public'));
