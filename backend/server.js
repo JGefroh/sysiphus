@@ -134,3 +134,6 @@ app.get('/*', (req, res, next) => {
 });
 
 server.listen(port);
+process.on('uncaughtException', function (err) {
+  console.log(err);
+})
