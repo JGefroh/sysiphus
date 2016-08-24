@@ -25,7 +25,7 @@ io.on('connection', function(client) {
     }
 
     var server = getServer(fromClient.id);
-    if (!server) {
+    if (!server || !server.url) {
       sendFail(client, fromClient.id);
       return;
     }
@@ -85,7 +85,7 @@ function fetchSysiphus(client, server) {
   });
 }
 
-function sendFail(id) {
+function sendFail(client, id) {
   var result = {
     id: id,
     lastUpdated: new Date(),
