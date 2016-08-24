@@ -40,10 +40,14 @@
             </span><br/>
             <span data-ng-if="server.disk_total_in_bytes" class="detail subtle">
               <span class="fa fa-fw fa-hdd-o"></span>
-              Used {{ (server.disk_used_in_bytes / 1000 / 1000 / 1000).toFixed(1) }} of
+              Using {{ (server.disk_used_in_bytes / 1000 / 1000 / 1000).toFixed(1) }} of
               {{ (server.disk_total_in_bytes / 1000 / 1000/ 1000).toFixed(1) }}gb
 
               ({{ ((server.disk_used_in_bytes / server.disk_total_in_bytes) * 100).toFixed(0) }}%)
+            </span><br/>
+            <span data-ng-if="server.cpu_idle" class="detail subtle">
+              <span class="fa fa-fw fa-gears"></span>
+              Using {{ (100 - server.cpu_idle).toFixed(2) }}% CPU
             </span><br/>
           </div>
         </div>

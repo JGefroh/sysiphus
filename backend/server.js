@@ -126,8 +126,17 @@ router.get('/', (req, res) => {
 });
 
 router.post('/performance_update', (req, res) => {
-  console.info(req.body.disk_used_in_bytes);
-  console.info(req.body.disk_free_in_bytes);
+  var server = getServer(req.body.id);
+  var result = {
+    id: server.id,
+    lastUpdated: new Date(),
+    disk_free_in_bytes: req.body.disk_free_in_bytes,
+    disk_used_in_bytes: req.body.disk_used_in_bytes,
+    disk_total_in_bytes: req.body.disk_used_in_bytes + req.body.disk_free_in_bytes,
+    cpu_idle: req.body.cpu_idle,
+  };
+  io.emit('status:get:result', result);
+  res.send("Thanks!");
 });
 
 app.use('/', express.static('public'));
@@ -145,6 +154,7 @@ app.get('/*', (req, res, next) => {
 });
 
 server.listen(port);
+console.info("This is Sysiphus.");
 process.on('uncaughtException', function (err) {
   console.log(err);
 })
