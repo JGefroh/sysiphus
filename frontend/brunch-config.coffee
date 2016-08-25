@@ -35,6 +35,8 @@ exports.config =
           /^bower_components(\/|\\)angular(\/|\\)angular.js$/,
           /^app(\/|\\)modules(\/|\\)(.+)(\/|\\)(.+)-module.js$/,
           /^app(\/|\\)modules(\/|\\)(.+)(\/|\\)(.+).js$/,
+          'app/vendor/chart.min.js',
+          'app/vendor/angular-chart.min.js',
           'app/app.js'
         ]
     stylesheets:

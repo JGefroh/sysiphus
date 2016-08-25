@@ -8,7 +8,7 @@ exports.up = function(knex, Promise) {
        table.bigInteger('disk_used_in_bytes');
        table.bigInteger('disk_total_in_bytes');
        table.integer('server_id');
-       table.dateTime('created_at');
+       table.dateTime('created_at').defaultTo(knex.raw('now()'));
      })
   ]);
 };

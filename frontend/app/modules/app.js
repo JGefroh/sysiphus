@@ -7,7 +7,8 @@
     .module('sysiphus',
     [
         'ui.router',
-        'sysiphus.home'
+        'sysiphus.home',
+        'chart.js'
     ])
     .constant('baseImagePath', '/images/')
     .constant('config', {apiHost: apiHost})

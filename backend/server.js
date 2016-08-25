@@ -157,7 +157,7 @@ router.post('/performance_update', (req, res) => {
     disk_free_in_bytes: req.body.disk_free_in_bytes,
     disk_used_in_bytes: req.body.disk_used_in_bytes,
     disk_total_in_bytes: req.body.disk_used_in_bytes + req.body.disk_free_in_bytes,
-    cpu_idle_percentage: req.body.cpu_idle,
+    cpu_idle_percentage: req.body.cpu_idle
   };
   knex.insert(result).into('measurements').then(function() {
     result.lastUpdated = new Date();
