@@ -12,15 +12,16 @@ started() { echo "Sending sysiphus update to: $HOST"; }
 if [ "$(uname)" == "Darwin" ]; then
     # Do something under Mac OS X platform
     get_cpu_idle() { top -l 5 | head -n 4 | tail -1 | awk '{ print $7}' | sed 's/%//'; }
+    get_disk_free_in_bytes() { df -P . | tail -1  | awk '{print $4 * 512}'; }
+    get_disk_used_in_bytes() { df -P . | tail -1 | awk '{print $3 * 512}'; }
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     # Do something under GNU/Linux platform
     get_cpu_idle() {  top -b -n1 | grep "Cpu(s)" | awk '{ print $8 }'; }
+    get_disk_free_in_bytes() { df --block-size=512 -P . | tail -1  | awk '{print $4 * 512}'; }
+    get_disk_used_in_bytes() { df --block-size=512 -P . | tail -1 | awk '{print $3 * 512}'; }
 else
     get_cpu_idle() { echo '-1'; }
 fi
-
-get_disk_free_in_bytes() { df --block-size=512 -P . | tail -1  | awk '{print $4 * 512}'; }
-get_disk_used_in_bytes() { df --block-size=512 -P . | tail -1 | awk '{print $3 * 512}'; }
 waiting(){
   echo $HOST
 }

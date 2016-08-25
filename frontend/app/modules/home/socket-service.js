@@ -35,7 +35,7 @@
       angular.forEach(service.projects, function(project) {
         var match = null;
         angular.forEach(project.servers, function(server) {
-          if (server.id === data.id) {
+          if (server.id === data.server_id) {
             match = server;
           }
         });
@@ -44,6 +44,26 @@
             angular.extend(match, data);
             match.loading = false;
             project.lastUpdated = data.lastUpdated;
+          });
+        }
+      });
+    });
+
+    socket.on('measurements:get:result', function(data) {
+      if (!data || !data.length) {
+        return;
+      }
+      angular.forEach(service.projects, function(project) {
+        var match = null;
+        angular.forEach(project.servers, function(server) {
+          if (server.id === data[0].server_id) {
+            match = server;
+          }
+        });
+        if (match) {
+          $rootScope.$applyAsync(function() {
+            match.measurements = data;
+            match.loading = false;
           });
         }
       });

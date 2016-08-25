@@ -3,6 +3,9 @@ const bodyParser = require('body-parser')
 const app = express();
 const router = express.Router();
 const exec = require('child_process').exec;
+const knex = require('knex')(require('./knexfile')[process.env.NODE_ENV || 'development']);
+
+
 
 const port = process.env.PORT || 8080;
 var server = require('http').createServer(app);
@@ -34,8 +37,22 @@ io.on('connection', function(client) {
     if (server.sysiphusUrl) {
       fetchSysiphus(client, server);
     }
+    fetchMeasurements(client, server);
   });
 });
+
+function fetchMeasurements(client, server) {
+  var data = [];
+  knex('measurements').where({
+    server_id: server.id
+  }).map(function(row) {
+    data.push(row);
+  }).then(function() {
+    if (data.length) {
+      client.emit('measurements:get:result', data);
+    }
+  });
+}
 
 function fetchServer(client, server) {
   var protocol = server.url.indexOf('https:') === -1 ? http : https;
@@ -48,7 +65,7 @@ function fetchServer(client, server) {
     });
     response.on('end', function() {
       var result = {
-        id: server.id,
+        server_id: server.id,
         lastUpdated: new Date(),
         timeTaken: parseTimeTaken(start),
         server: parseServer(response),
@@ -124,18 +141,28 @@ app.use('/api', router);
 router.get('/', (req, res) => {
 
 });
+router.get('/test', (req, res) => {
+  var data = [];
+  knex('measurements').map(function(row) {
+    data.push(row);
+  }).then(function() {
+    res.send(data);
+  });
+});
 
 router.post('/performance_update', (req, res) => {
   var server = getServer(req.body.id);
   var result = {
-    id: server.id,
-    lastUpdated: new Date(),
+    server_id: server.id,
     disk_free_in_bytes: req.body.disk_free_in_bytes,
     disk_used_in_bytes: req.body.disk_used_in_bytes,
     disk_total_in_bytes: req.body.disk_used_in_bytes + req.body.disk_free_in_bytes,
-    cpu_idle: req.body.cpu_idle,
+    cpu_idle_percentage: req.body.cpu_idle,
   };
-  io.emit('status:get:result', result);
+  knex.insert(result).into('measurements').then(function() {
+    result.lastUpdated = new Date();
+    io.emit('status:get:result', result);
+  });
   res.send("Thanks!");
 });
 
