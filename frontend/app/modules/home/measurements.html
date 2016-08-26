@@ -1,8 +1,8 @@
 <div data-ng-if="vm.measurements.cpu_idle">
   <span class="detail subtle">
     <span class="fa fa-fw fa-gears"></span>
-    {{vm.measurements.cpu_idle.data[0][vm.measurements.cpu_idle.data[0].length]}}
-    CPU Utilization: {{ vm.measurements.cpu_idle.data[0][vm.measurements.cpu_idle.data[0].length - 1]}}%
+    {{vm.measurements.cpu_idle.data[0][vm.measurements.cpu_idle.data[0].length].toFixed(2)}}
+    CPU Utilization: {{ vm.measurements.cpu_idle.data[0][vm.measurements.cpu_idle.data[0].length - 1].toFixed(2)}}%
   </span><br/>
   <canvas id="cpu" class="chart chart-line"
           chart-data="vm.measurements.cpu_idle.data"
