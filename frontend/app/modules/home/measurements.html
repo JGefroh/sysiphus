@@ -1,0 +1,23 @@
+<div data-ng-if="vm.measurements.cpu_idle">
+  <span class="detail subtle">
+    <span class="fa fa-fw fa-gears"></span>
+    CPU Utilization: {{ vm.measurements.cpu_idle.data[0][vm.measurements.cpu_idle.data.length - 1]}}%
+  </span><br/>
+  <canvas id="cpu" class="chart chart-line"
+          chart-data="vm.measurements.cpu_idle.data"
+          chart-labels="vm.measurements.cpu_idle.labels"
+          chart-options="vm.chartOptions.cpu_idle || vm.getChartOptions(server, 'cpu_idle')"
+          style="margin-bottom: 2rem;"></canvas>
+</div>
+<div data-ng-if="vm.measurements.disk_used">
+  <span class="detail subtle">
+    <span class="fa fa-fw fa-hdd-o"></span>
+    Disk Utilization: {{ ((vm.measurements.disk_used.data[0][vm.measurements.disk_used.data.length - 1] / vm.measurements.disk_total.data[0][vm.measurements.disk_total.data.length - 1]) * 100).toFixed(2)}}%
+                      ({{ vm.measurements.disk_used.data[0][vm.measurements.disk_used.data.length - 1] }} of {{ vm.measurements.disk_total.data[0][vm.measurements.disk_total.data.length - 1] }}gb)
+
+  </span><br/>
+  <canvas id="hdd" class="chart chart-line"
+          chart-data="vm.measurements.disk_used.data"
+          chart-labels="vm.measurements.disk_used.labels"
+          chart-options="vm.chartOptions.disk_used || vm.getChartOptions(server, 'disk_used')"></canvas>
+</div>

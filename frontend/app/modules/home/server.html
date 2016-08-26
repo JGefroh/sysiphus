@@ -1,0 +1,33 @@
+<div>
+  <span class="fa fa-fw fa-4x icon" data-ng-class="vm.server.icon"></span>
+  <div style="display: inline-block;">
+    <span>
+      <a data-ng-bind="vm.server.name" data-ng-href="{{vm.server.url}}" style="text-decoration: none;"></a>
+      <a data-ng-if="vm.server.sourceUrl" data-ng-href="{{vm.server.sourceUrl}}"><span class="fa fa-fw fa-lg fa-github"></span></a>
+    </sp>
+    <span class="detail subtle">
+      &bull;
+      <span data-ng-if="vm.server.loading"><span class="fa fa-fw fa-spin fa-spinner"></span></span>
+      <span data-ng-if="!vm.server.loading && vm.server.up && vm.server.verified">Online</span>
+      <span data-ng-if="!vm.server.loading && vm.server.up && !vm.server.verified" style="color: red;">Verification Failed</span>
+      <span data-ng-if="!vm.server.loading && !vm.server.up" style="color: red;">Offline</span>
+    </span><br/>
+
+    <span data-ng-bind="vm.server.ip" class="detail subtle"></span><br/>
+
+    <span class="detail subtle">
+      <span>{{vm.server.server}}</span>
+    </span><br/>
+    <span class="detail subtle">
+      <span data-ng-if="vm.server.timeTaken">Responded in {{vm.server.timeTaken}}ms</span>
+    </span><br/>
+    <div data-ng-if="vm.server.applications.length">
+      <hr>
+
+      <span class="detail subtle">Applications:</span>
+      <div data-ng-repeat="application in vm.server.applications">
+        <div data-application="application"></div>
+      </div>
+    </div>
+  </div>
+</div>

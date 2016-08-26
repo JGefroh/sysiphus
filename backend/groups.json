@@ -1,0 +1,138 @@
+[
+  {
+    "name": "Digital Ocean",
+    "servers": [
+      {
+        "id": 5000,
+        "name": "Dokku Droplet",
+        "icon": "fa-server",
+        "url": "http://138.68.18.27",
+        "verification": "Chatterize",
+        "applications": [
+          {
+            "id": 5002,
+            "name": "Chatterize",
+            "url": "http://chatterize.jgefroh.com",
+            "sourceUrl": "https://github.com/jgefroh/chatterize",
+            "verification": "Chatterize"
+          },
+          {
+            "id": 5001,
+            "name": "Sysiphus",
+            "url": "http://sysiphus.jgefroh.com",
+            "sourceUrl": "https://github.com/jgefroh/sysiphus",
+            "verification": "Sysiphus"
+          }
+        ]
+      },
+      {
+        "id": 3000,
+        "name": "Ubuntu Droplet",
+        "icon": "fa-server",
+        "url": "http://107.170.244.120",
+        "verification": "ToDoList",
+        "applications": [
+          {
+            "id": 4001,
+            "name": "ToDoList (Frontend)",
+            "url": "http://todolist.jgefroh.com",
+            "sourceUrl": "https://github.com/jgefroh/todolist",
+            "verification": "ToDoList"
+          },
+          {
+            "id": 4000,
+            "name": "ToDoList (Backend)",
+            "url": "http://todolist.jgefroh.com/rest/security",
+            "sourceUrl": "https://github.com/jgefroh/todolist",
+            "verification": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Bluehost",
+    "servers": [
+      {
+        "id": 6000,
+        "name": "Bluehost Web Server",
+        "icon": "fa-desktop",
+        "url": "http://jgefroh.com",
+        "sysiphus": {
+          "url": "http://jgefroh.com/sysiphus.php",
+          "updateMode": "REACH_OUT",
+          "updateFrequencyInMs": 300000
+        },
+        "verification": "Caroline Paulic",
+        "applications": [
+          {
+            "id": 6000,
+            "name": "JGefroh.com",
+            "url": "http://jgefroh.com",
+            "sysiphusUrl": "http://jgefroh.com/sysiphus.php",
+            "sourceUrl": "https://github.com/jgefroh/jgefroh-website",
+            "verification": "Caroline Paulic"
+          },
+          {
+            "id": 6100,
+            "name": "Archie",
+            "icon": "fa-desktop",
+            "url": "http://archie.jgefroh.com",
+            "sourceUrl": "https://github.com/jgefroh/archie",
+            "verification": "archie"
+          },
+          {
+            "id": 7000,
+            "name": "Aural",
+            "icon": "fa-desktop",
+            "url": "http://aural.jgefroh.com",
+            "sourceUrl": "https://github.com/jgefroh/aural",
+            "verification": "aural"
+          },
+          {
+            "id": 8000,
+            "name": "Serenity",
+            "icon": "fa-desktop",
+            "url": "http://serenity.jgefroh.com",
+            "sourceUrl": "https://github.com/jgefroh/serenity",
+            "verification": "serenity"
+          },
+          {
+            "id": 9000,
+            "name": "Palette",
+            "icon": "fa-desktop",
+            "url": "http://palette.jgefroh.com",
+            "sourceUrl": "https://github.com/jgefroh/palette",
+            "verification": "Palette"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "HNL.IO",
+    "servers": [
+      {
+        "id": 1000,
+        "name": "Dokku Server",
+        "icon": "fa-server",
+        "url": "https://hnl.io",
+        "verification": "hnl.io",
+        "applications": [
+          {
+            "id": 1000,
+            "name": "hnl.io (Frontend)",
+            "url": "https://hnl.io",
+            "verification": "hnl.io"
+          },
+          {
+            "id": 2000,
+            "name": "hnl.io (Backend)",
+            "url": "https://api.hnl.io",
+            "verification": "this was caused by a bug in the site"
+          }
+        ]
+      }
+    ]
+  }
+]

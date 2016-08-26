@@ -5,75 +5,27 @@
   </ul>
 </div>
 <div class="content">
-  <div data-ng-repeat="project in vm.projects">
-    <div class="application">
-      <span class="title">
-        <a data-ng-bind="project.name" data-ng-href="{{project.liveUrl}}" style="text-decoration: none;"></a>
-        <a data-ng-if="project.sourceUrl" data-ng-href="{{project.sourceUrl}}"><span class="fa fa-fw fa-lg fa-github"></span></a>
-      </span>
-      <a class="detail subtle"
-         style="font-size: 0.8rem; float: right; cursor: pointer; text-decoration: none;"
-         data-ng-click="vm.syncProject(project);">{{project.lastUpdated | date:'\'Last updated\' h:mm a'}}</a>
+  <section class="group" data-ng-repeat="group in vm.groups">
+    <span class="title">
+      <a data-ng-bind="group.name" data-ng-href="{{group.liveUrl}}" style="text-decoration: none;"></a>
+      <a data-ng-if="group.sourceUrl" data-ng-href="{{group.sourceUrl}}"><span class="fa fa-fw fa-lg fa-github"></span></a>
+    </span>
+    <a class="detail subtle"
+       style="font-size: 0.8rem; float: right; cursor: pointer; text-decoration: none;"
+       data-ng-click="vm.syncGroup(group);">{{group.lastUpdated | date:'\'Last updated\' h:mm a'}}</a>
 
-      <div class="info">
-        <div class="server" data-ng-repeat="server in project.servers">
-          <div class="boundary">
-            <span class="fa fa-fw fa-4x boundary-icon" data-ng-class="server.icon"></span>
-            <div class="boundary-detail">
-              <label class="boundary-title">
-                <span data-ng-bind="server.name"></span>
-                <span class="detail subtle">
-                  &bull;
-                  <span data-ng-if="server.loading"><span class="fa fa-fw fa-spin fa-spinner"></span></span>
-                  <span data-ng-if="!server.loading && server.up && server.verified">Online</span>
-                  <span data-ng-if="!server.loading && server.up && !server.verified" style="color: red;">Verification Failed</span>
-                  <span data-ng-if="!server.loading && !server.up" style="color: red;">Offline</span>
-                </span><br/>
-              </label>
-              <span data-ng-bind="server.ip" class="detail subtle"></span><br/>
-
-              <span class="detail subtle">
-                <span>{{server.server}}</span>
-              </span><br/>
-              <span class="detail subtle">
-                <span data-ng-if="server.timeTaken">Responded in {{server.timeTaken}}ms</span>
-              </span><br/>
-              <span data-ng-if="server.disk_total_in_bytes" class="detail subtle">
-                <span class="fa fa-fw fa-hdd-o"></span>
-                Using {{ (server.disk_used_in_bytes / 1000 / 1000 / 1000).toFixed(1) }} of
-                {{ (server.disk_total_in_bytes / 1000 / 1000/ 1000).toFixed(1) }}gb
-                ({{ ((server.disk_used_in_bytes / server.disk_total_in_bytes) * 100).toFixed(0) }}%)
-              </span><br/>
-              <span data-ng-if="server.cpu_idle" class="detail subtle">
-                <span class="fa fa-fw fa-gears"></span>
-                Using {{ (100 - server.cpu_idle_percentage).toFixed(2) }}% CPU
-              </span><br/>
-            </div>
+    <section class="servers">
+      <div class="server" data-ng-repeat="server in group.servers">
+        <div class="row">
+          <div class="half-section">
+            <div data-server="server"></div>
           </div>
-
-          <div data-ng-if="server.measurements" class="boundary">
-            <span class="detail subtle">
-              <span class="fa fa-fw fa-gears"></span>
-              CPU Utilization: {{ server.measurements.cpu_idle.data[server.measurements.cpu_idle.data.length - 1]}}%
-            </span><br/>
-            <canvas id="cpu" class="chart chart-line"
-                    chart-data="server.measurements.cpu_idle.data"
-                    chart-labels="server.measurements.cpu_idle.labels"
-                    chart-options="{scales: {xAxes: [{scaleLabel: {display: true, labelString: 'Time'}, display: true}], yAxes: [{scaleLabel: {display: true, labelString: 'CPU Utilization (%)'}, ticks: {min: 0, max: 100, stepSize: 100 / 10}}]}}"></canvas>
-
-            <span class="detail subtle">
-              <span class="fa fa-fw fa-hdd-o"></span>
-              Disk Utilization: {{ ((server.measurements.disk_used.data[server.measurements.disk_used.data.length - 1] / server.measurements.disk_total.data[server.measurements.disk_total.data.length - 1]) * 100).toFixed(2)}}%
-                                ({{ server.measurements.disk_used.data[server.measurements.disk_used.data.length - 1] }} of {{ server.measurements.disk_total.data[server.measurements.disk_total.data.length - 1] }}gb)
-
-            </span><br/>
-            <canvas id="hdd" class="chart chart-line"
-                    chart-data="server.measurements.disk_used.data"
-                    chart-labels="server.measurements.disk_used.labels"
-                    chart-options="server.chartOptions || vm.getChartOptions(server)"></canvas>
+          <div class="half-section">
+            <div data-measurements="server.measurements"></div>
           </div>
         </div>
+        <hr data-ng-if="!$last">
       </div>
     </div>
-  </div>
+  </section>
 </div>

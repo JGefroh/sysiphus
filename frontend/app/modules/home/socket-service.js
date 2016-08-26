@@ -5,69 +5,94 @@
 
   function Service($rootScope, $filter) {
     var service = this;
-    service.projects = [];
+    service.groups = [];
     var socket = io();
 
-    socket.on('projects:list', function(projects) {
+    socket.on('groups:list', function(groups) {
+      service.groups.length = 0;
       $rootScope.$applyAsync(function() {
-        angular.forEach(projects, function(project) {
-          service.projects.push(project);
-          service.syncProject(project);
+        angular.forEach(groups, function(group) {
+          service.groups.push(group);
+          service.syncGroup(group);
         })
       })
     });
 
-    service.syncProject = function(project) {
-      angular.forEach(project.servers, function(server) {
-        server.loading = true;
-        socket.emit('status:get', {id: server.id});
+    service.syncGroups = function() {
+      $rootScope.$applyAsync(function() {
+        angular.forEach(service.groups, function(group) {
+          service.syncGroup(group);
+        })
+      })
+    };
+
+
+    service.syncGroup = function(group) {
+      angular.forEach(group.servers, function(server) {
+        socket.emit('get:status:server', {id: server.id});
+        socket.emit('get:measurements:server', {id: server.id});
+        angular.forEach(server.applications, function(application) {
+          socket.emit('get:status:application', {id: application.id});
+        })
       });
     }
 
     socket.on('connect', function(data) {
-      angular.forEach(service.projects, function(project) {
-        service.syncProject(project);
+      angular.forEach(service.groups, function(group) {
+        service.syncGroup(group);
       });
     });
 
-    socket.on('status:get:result', function(data) {
-      var match = null;
-      angular.forEach(service.projects, function(project) {
-        var match = null;
-        angular.forEach(project.servers, function(server) {
-          if (server.id === data.server_id) {
-            match = server;
-          }
+    socket.on('get:status:server:update', function(data) {
+      var match = getMatch(data.id, 'server');
+      if (match) {
+        $rootScope.$applyAsync(function() {
+          angular.extend(match, data);
         });
-        if (match) {
-          $rootScope.$applyAsync(function() {
-            angular.extend(match, data);
-            match.loading = false;
-            project.lastUpdated = data.lastUpdated;
-          });
-        }
-      });
-    });
-
-    socket.on('measurements:get:result', function(data) {
-      if (!data || !data.length) {
-        return;
       }
-      angular.forEach(service.projects, function(project) {
-        var match = null;
-        angular.forEach(project.servers, function(server) {
-          if (server.id === data[0].server_id) {
-            match = server;
-          }
+    });
+
+    socket.on('get:status:application:update', function(data) {
+      var match = getMatch(data.id, 'application');
+      if (match) {
+        $rootScope.$applyAsync(function() {
+          angular.extend(match, data);
         });
-        if (match) {
-          $rootScope.$applyAsync(function() {
-            match.measurements = transformToChartJSCompatible(data);
-            match.loading = false;
+      }
+    });
+
+    socket.on('get:measurements:server:update', function(data) {
+      var match = getMatch(data.id, 'server');
+      if (match) {
+        $rootScope.$applyAsync(function() {
+          match.measurements = transformToChartJSCompatible(data.data);
+        });
+      }
+    });
+
+    function getMatch(id, type) {
+      var match = null;
+      angular.forEach(service.groups, function(group) {
+        if (type !== 'group') {
+          angular.forEach(group.servers, function(server) {
+            if (type !== 'server') {
+              angular.forEach(server.applications, function(application) {
+                if (application.id === id) {
+                  match = application;
+                }
+              });
+            }
+            else if (server.id === id) {
+              match = server;
+            }
           });
         }
+        else if (group.id === id) {
+          match = group;
+        }
       });
-    });
+      return match;
+    }
 
     function transformToChartJSCompatible(data) {
       var disk_used_in_bytes_data = [];
@@ -79,7 +104,6 @@
         disk_used_in_bytes_data.push((point.disk_used_in_bytes / 1000 / 1000 / 1000).toFixed(2));
         cpu_idle_percentage_data.push(100 - point.cpu_idle_percentage);
         disk_total_in_bytes_data.push((point.disk_total_in_bytes / 1000 / 1000 / 1000).toFixed(2));
-        console.info(point.disk_total_in_bytes);
         if (index == data.length - 1) {
           disk_used_in_bytes_labels.push($filter('date')(new Date(point.created_at), 'MMM dd - HH:mm'));
           cpu_idle_percentage_labels.push($filter('date')(new Date(point.created_at), 'MMM dd - HH:mm'));
@@ -91,14 +115,14 @@
       });
       var results = {
         disk_used: {
-          data: disk_used_in_bytes_data,
+          data: [disk_used_in_bytes_data],
           labels: disk_used_in_bytes_labels
         },
         disk_total: {
-          data: disk_total_in_bytes_data
+          data: [disk_total_in_bytes_data]
         },
         cpu_idle: {
-          data: cpu_idle_percentage_data,
+          data: [cpu_idle_percentage_data],
           labels: cpu_idle_percentage_labels
         }
       };

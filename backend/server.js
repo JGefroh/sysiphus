@@ -6,11 +6,10 @@ const exec = require('child_process').exec;
 const knex = require('knex')(require('./knexfile')[process.env.NODE_ENV || 'development']);
 
 
-
 const port = process.env.PORT || 8080;
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-const projects = require('./projects.json')
+const groups = require('./groups.json')
 var http = require("http");
 var https = require("https");
 
@@ -21,25 +20,75 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 
 io.on('connection', function(client) {
-  client.emit('projects:list', projects);
-  client.on('status:get', function(fromClient) {
-    if (!fromClient || !fromClient.id) {
+  client.emit('groups:list', groups);
+
+  client.on('get:status:application', function(socketData) {
+    var application = getObject(socketData.id, 'application');
+    if (!application) {
       return;
     }
+    fetchApplication(client, application);
+  });
 
-    var server = getServer(fromClient.id);
-    if (!server || !server.url) {
-      sendFail(client, fromClient.id);
+  client.on('get:status:server', function(socketData) {
+    var server = getObject(socketData.id, 'server');
+    if (!server) {
       return;
     }
-
     fetchServer(client, server);
-    if (server.sysiphusUrl) {
-      fetchSysiphus(client, server);
+  });
+
+  client.on('get:measurements:server', function(socketData) {
+    var server = getObject(socketData.id, 'server');
+    if (!server) {
+      return;
     }
     fetchMeasurements(client, server);
-  });
+  })
 });
+
+function fetchServer(client, server) {
+  var start = new Date();
+  var request = getProtocol(server.url).get(server.url, function(response) {
+    var data = '';
+    var ip = parseIP(request); //[JG]: Not available if connection is closed.
+    response.on('data', function(chunk) {
+      data += chunk;
+    });
+    response.on('end', function() {
+      var result = {
+        id: server.id,
+        lastUpdated: new Date(),
+        timeTaken: parseTimeTaken(start),
+        server: parseServer(response),
+        up: data.indexOf('Could not resolve host') === -1,
+        verified: data.indexOf(server.verification) !== -1,
+        ip: ip
+      };
+      client.emit('get:status:server:update', result);
+    })
+  });
+}
+
+function fetchApplication(client, application) {
+  var request = getProtocol(application.url).get(application.url, function(response) {
+    var data = '';
+    response.on('data', function(chunk) {
+      data += chunk;
+    });
+    response.on('end', function() {
+      var result = {
+        id: application.id,
+        lastUpdated: new Date(),
+        up: data.indexOf('Could not resolve host') === -1,
+        verified: data.indexOf(application.verification) !== -1
+      };
+      client.emit('get:status:application:update', result);
+    });
+  }, function() {
+    sendFail(client, application.id);
+  });
+}
 
 function fetchMeasurements(client, server) {
   var data = [];
@@ -49,35 +98,38 @@ function fetchMeasurements(client, server) {
     data.push(row);
   }).then(function() {
     if (data.length) {
-      client.emit('measurements:get:result', data);
-    }
+      client.emit('get:measurements:server:update', {id: server.id, data: data});
+    };
   });
 }
 
-function fetchServer(client, server) {
-  var protocol = server.url.indexOf('https:') === -1 ? http : https;
-  var start = new Date();
-  var request = protocol.get(server.url, function(response) {
-    var data = '';
-    var ip = parseIP(request); //[JG]: Not available if connection is closed.
-    response.on('data', function(chunk) {
-      data += chunk;
-    });
-    response.on('end', function() {
-      var result = {
-        server_id: server.id,
-        lastUpdated: new Date(),
-        timeTaken: parseTimeTaken(start),
-        server: parseServer(response),
-        up: data.indexOf('Could not resolve host') === -1,
-        verified: data.indexOf(server.verification) !== -1,
-        ip: ip
-      };
-      client.emit('status:get:result', result);
-    })
-  }, function() {
-    sendFail(client, server.id);
-  });
+function getProtocol(url) {
+  return url.indexOf('https:') === -1 ? http : https;
+}
+
+function getObject(id, type) {
+  for (var g = 0; g < groups.length; g++) {
+    var group = groups[g];
+    if (type !== 'group' && group.servers) {
+      for (var s = 0; s < group.servers.length; s++) {
+        var server = group.servers[s];
+        if (type !== 'server' && server.applications) {
+          for (var a = 0; a < server.applications.length; a++) {
+            var application = server.applications[a];
+            if (application.id === id) {
+              return application;
+            }
+          }
+        }
+        else if (server.id === id) {
+          return server;
+        }
+      }
+    }
+    else if (group.id === id){
+      return group;
+    }
+  }
 }
 
 function fetchSysiphus(client, server) {
@@ -98,30 +150,8 @@ function fetchSysiphus(client, server) {
       disk_total_in_bytes: json.disk_total_in_bytes,
       lastUpdated: new Date()
     }
-    client.emit('status:get:result', result);
+    client.emit('get:status:result', result);
   });
-}
-
-function sendFail(client, id) {
-  var result = {
-    id: id,
-    lastUpdated: new Date(),
-    up: false,
-    verified: false
-  };
-  client.emit('status:get:result', result);
-}
-
-function getServer(id) {
-  for (var i = 0; i < projects.length; i++) {
-    var project = projects[i];
-    for (var x = 0; x < project.servers.length; x++) {
-      var server = project.servers[x];
-      if (server.id === id) {
-        return project.servers[x];
-      }
-    }
-  }
 }
 
 function parseServer(response) {
@@ -151,7 +181,10 @@ router.get('/test', (req, res) => {
 });
 
 router.post('/performance_update', (req, res) => {
-  var server = getServer(req.body.id);
+  var server = getObject(req.body.id, 'server');
+  if (!server) {
+    return;
+  }
   var result = {
     server_id: server.id,
     disk_free_in_bytes: req.body.disk_free_in_bytes,
@@ -161,7 +194,7 @@ router.post('/performance_update', (req, res) => {
   };
   knex.insert(result).into('measurements').then(function() {
     result.lastUpdated = new Date();
-    io.emit('status:get:result', result);
+    io.emit('get:status:update', result);
   });
   res.send("Thanks!");
 });

@@ -1,0 +1,17 @@
+<div class="application">
+  <label class="title">
+    <span>
+      <a data-ng-bind="vm.application.name" data-ng-href="{{vm.application.url}}" style="text-decoration: none;"></a>
+      <a data-ng-if="vm.application.sourceUrl" data-ng-href="{{vm.application.sourceUrl}}"><span class="fa fa-fw fa-lg fa-github"></span></a>
+    </span>
+  </label>
+  <span class="detail subtle">
+    &bull;
+    <span data-ng-if="vm.application.loading"><span class="fa fa-fw fa-spin fa-spinner"></span></span>
+    <span data-ng-if="!vm.application.loading && vm.application.up && vm.application.verified">Online</span>
+    <span data-ng-if="!vm.application.loading && vm.application.up && !vm.application.verified" style="color: red;">Verification Failed</span>
+    <span data-ng-if="!vm.application.loading && !vm.application.up" style="color: red;">Offline</span>
+  </span>
+  <div>
+  </div>
+</div>
