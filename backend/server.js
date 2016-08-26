@@ -173,7 +173,7 @@ router.get('/', (req, res) => {
 });
 router.get('/test', (req, res) => {
   var data = [];
-  knex('measurements').map(function(row) {
+  knex('measurements').limit(300).orderBy('created_at', 'desc').map(function(row) {
     data.push(row);
   }).then(function() {
     res.send(data);
@@ -193,8 +193,7 @@ router.post('/performance_update', (req, res) => {
     cpu_idle_percentage: req.body.cpu_idle
   };
   knex.insert(result).into('measurements').then(function() {
-    result.lastUpdated = new Date();
-    io.emit('get:status:update', result);
+    fetchMeasurements(io, server);
   });
   res.send("Thanks!");
 });

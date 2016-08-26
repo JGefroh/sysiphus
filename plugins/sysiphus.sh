@@ -1,3 +1,4 @@
+#!/bin/bash
 HOST=$1
 PROJECT=$2
 if [ -z "${HOST}" ]; then
