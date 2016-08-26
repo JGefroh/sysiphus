@@ -100,18 +100,14 @@
       var cpu_idle_percentage_data = [];
       var cpu_idle_percentage_labels = [];
       var disk_total_in_bytes_data = [];
+      var indexMod = Math.floor(data.length / 9);
       angular.forEach(data, function(point, index) {
         disk_used_in_bytes_data.push((point.disk_used_in_bytes / 1000 / 1000 / 1000).toFixed(2));
         cpu_idle_percentage_data.push(100 - point.cpu_idle_percentage);
         disk_total_in_bytes_data.push((point.disk_total_in_bytes / 1000 / 1000 / 1000).toFixed(2));
-        if (index == data.length - 1) {
-          disk_used_in_bytes_labels.push($filter('date')(new Date(point.created_at), 'MMM dd - HH:mm'));
-          cpu_idle_percentage_labels.push($filter('date')(new Date(point.created_at), 'MMM dd - HH:mm'));
-        }
-        else {
-          disk_used_in_bytes_labels.push($filter('date')(new Date(point.created_at), 'MMM dd'));
-          cpu_idle_percentage_labels.push($filter('date')(new Date(point.created_at), 'MMM dd'));
-        }
+        disk_used_in_bytes_labels.push($filter('date')(new Date(point.created_at), 'MMM dd - HH:mm'));
+        cpu_idle_percentage_labels.push($filter('date')(new Date(point.created_at), 'MMM dd - HH:mm'));
+
       });
       var results = {
         disk_used: {
