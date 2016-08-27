@@ -4,7 +4,7 @@
     .module('sysiphus.home')
     .directive('measurements', [Directive]);
   function Directive() {
-    function Controller($scope, $state, SocketService) {
+    function Controller($scope, $filter, $state, SocketService) {
       var vm = this;
 
       vm.getChartOptions = function(server, chartFor) {
@@ -16,12 +16,18 @@
           max = 100;
           stepSize = 100  / 10;
         }
-        else {
+        else if (chartFor === 'disk_used') {
           labelStringY = 'Used Disk Space (GB)';
-          max = Number(vm.measurements.disk_total.data[0][vm.measurements.disk_total.data.length - 1]);
-          stepSize = vm.measurements.disk_total.data[0][vm.measurements.disk_total.data.length - 1]  / 10;
+          max = Number(vm.measurements.disk_total.data[0][vm.measurements.disk_total.data[0].length - 1]);
+          stepSize = vm.measurements.disk_total.data[0][vm.measurements.disk_total.data[0].length - 1]  / 10;
+        }
+        else if (chartFor === 'ram_used') {
+          labelStringY = 'Used RAM (GB)';
+          max = Number(vm.measurements.ram_total.data[0][vm.measurements.ram_total.data[0].length - 1]);
+          stepSize = vm.measurements.ram_total.data[0][vm.measurements.ram_total.data[0].length - 1]  / 10;
         }
         var chartOptions = {
+          animation: false,
           scales: {
             xAxes: [
               {
@@ -29,7 +35,17 @@
                   display: true,
                   labelString: 'Time'
                 },
-                display: true
+                display: true,
+                ticks: {
+                  callback: function(dataLabel, index) {
+                    if (index % 5 === 0) {
+                      return $filter('date')(new Date(dataLabel), 'MMM dd - hh:mm')
+                    }
+                    else {
+                      return null;
+                    }
+                  }
+                }
               }
             ],
             yAxes: [
@@ -55,7 +71,7 @@
     return {
       restrict: 'A',
       templateUrl: 'measurements.html',
-      controller: ['$scope', '$state', 'SocketService', Controller],
+      controller: ['$scope', '$filter', '$state', 'SocketService', Controller],
       controllerAs: 'vm',
       bindToController: true,
       scope: {

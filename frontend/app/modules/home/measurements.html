@@ -1,8 +1,7 @@
 <div data-ng-if="vm.measurements.cpu_idle">
   <span class="detail subtle">
     <span class="fa fa-fw fa-gears"></span>
-    {{vm.measurements.cpu_idle.data[0][vm.measurements.cpu_idle.data[0].length].toFixed(2)}}
-    CPU Utilization: {{ vm.measurements.cpu_idle.data[0][vm.measurements.cpu_idle.data[0].length - 1].toFixed(2)}}%
+    CPU Utilization:     {{vm.measurements.cpu_idle.data[0][vm.measurements.cpu_idle.data.length - 1] }}%
   </span><br/>
   <canvas id="cpu" class="chart chart-line"
           chart-data="vm.measurements.cpu_idle.data"
@@ -10,6 +9,22 @@
           chart-options="vm.chartOptions.cpu_idle || vm.getChartOptions(server, 'cpu_idle')"
           style="margin-bottom: 2rem;"></canvas>
 </div>
+
+
+<div data-ng-if="vm.measurements.ram_used">
+  <span class="detail subtle">
+    <span class="fa fa-fw fa-hdd-o"></span>
+    RAM Utilization: {{ ((vm.measurements.ram_used.data[0][vm.measurements.ram_used.data[0].length - 1] / vm.measurements.ram_total.data[0][vm.measurements.ram_total.data[0].length - 1]) * 100).toFixed(2)}}%
+                      ({{ vm.measurements.ram_used.data[0][vm.measurements.ram_used.data[0].length - 1] }} of {{ vm.measurements.ram_total.data[0][vm.measurements.ram_total.data[0].length - 1] }}gb)
+
+  </span><br/>
+  <canvas id="hdd" class="chart chart-line"
+          chart-data="vm.measurements.ram_used.data"
+          chart-labels="vm.measurements.ram_used.labels"
+          chart-options="vm.chartOptions.ram_used || vm.getChartOptions(server, 'ram_used')"></canvas>
+</div>
+
+
 <div data-ng-if="vm.measurements.disk_used">
   <span class="detail subtle">
     <span class="fa fa-fw fa-hdd-o"></span>

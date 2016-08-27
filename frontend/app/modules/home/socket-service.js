@@ -65,10 +65,36 @@
       var match = getMatch(data.id, 'server');
       if (match) {
         $rootScope.$applyAsync(function() {
-          match.measurements = transformToChartJSCompatible(data.data);
+          var newMeasurements = transformToChartJSCompatible(data.data);
+          if (!match.measurements) {
+            return match.measurements = newMeasurements;
+          }
+          else {
+            combine(match.measurements, newMeasurements, 'cpu_idle');
+            combine(match.measurements, newMeasurements, 'disk_used');
+            combine(match.measurements, newMeasurements, 'disk_total');
+            combine(match.measurements, newMeasurements, 'ram_used');
+            combine(match.measurements, newMeasurements, 'ram_total');
+          }
         });
       }
     });
+
+    function combine(measurements, newMeasurements, type) {
+      if (!measurements[type]) {
+        measurements[type] = {
+          data: [],
+          labels: []
+        };
+      }
+      measurements[type].data = measurements[type].data.concat(newMeasurements[type].data);
+      angular.forEach(newMeasurements[type].data, function(point) {
+        measurements[type].data.push(point);
+      });
+      angular.forEach(newMeasurements[type].labels, function(point) {
+        measurements[type].labels.push(point);
+      });
+    }
 
     function getMatch(id, type) {
       var match = null;
@@ -94,35 +120,43 @@
       return match;
     }
 
-    function transformToChartJSCompatible(data) {
-      var disk_used_in_bytes_data = [];
-      var disk_used_in_bytes_labels = [];
-      var cpu_idle_percentage_data = [];
-      var cpu_idle_percentage_labels = [];
-      var disk_total_in_bytes_data = [];
-      var indexMod = Math.floor(data.length / 9);
-      angular.forEach(data, function(point, index) {
-        disk_used_in_bytes_data.push((point.disk_used_in_bytes / 1000 / 1000 / 1000).toFixed(2));
-        cpu_idle_percentage_data.push(100 - point.cpu_idle_percentage);
-        disk_total_in_bytes_data.push((point.disk_total_in_bytes / 1000 / 1000 / 1000).toFixed(2));
-        disk_used_in_bytes_labels.push($filter('date')(new Date(point.created_at), 'MMM dd - HH:mm'));
-        cpu_idle_percentage_labels.push($filter('date')(new Date(point.created_at), 'MMM dd - HH:mm'));
-
+    function processData(unformattedData, type, convert) {
+      var data = [];
+      var labels = [];
+      convert = convert || function(input) {return input;};
+      angular.forEach(unformattedData, function(point, index) {
+        data.push(convert(point[type]));
+        labels.push(point.created_at);
       });
-      var results = {
-        disk_used: {
-          data: [disk_used_in_bytes_data],
-          labels: disk_used_in_bytes_labels
-        },
-        disk_total: {
-          data: [disk_total_in_bytes_data]
-        },
-        cpu_idle: {
-          data: [cpu_idle_percentage_data],
-          labels: cpu_idle_percentage_labels
-        }
+      return {
+        data: [data],
+        labels: labels
       };
-      return results;
+    }
+
+    function transformToChartJSCompatible(data) {
+      var disk_used = processData(data, 'disk_used_in_bytes', function(value) {
+        return (value / 1000 / 1000 / 1000).toFixed(2)
+      });
+      var cpu_idle = processData(data, 'cpu_idle_percentage', function(value) {
+        return (100 - value).toFixed(2);
+      });
+      var disk_total = processData(data, 'disk_total_in_bytes', function(value) {
+        return (value / 1000 / 1000 / 1000).toFixed(2);
+      });
+      var ram_used = processData(data, 'ram_used_in_bytes', function(value) {
+        return (value / 1000 / 1000 / 1000).toFixed(2);
+      });
+      var ram_total = processData(data, 'ram_total_in_bytes', function(value) {
+        return (value / 1000 / 1000 / 1000).toFixed(2);
+      });
+      return {
+        disk_used: disk_used,
+        disk_total: disk_total,
+        cpu_idle: cpu_idle,
+        ram_used: ram_used,
+        ram_total: ram_total
+      };
     }
 
     return service;
