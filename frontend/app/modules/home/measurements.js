@@ -27,7 +27,6 @@
           stepSize = vm.measurements.ram_total.data[0][vm.measurements.ram_total.data[0].length - 1]  / 10;
         }
         var chartOptions = {
-          animation: false,
           scales: {
             xAxes: [
               {
