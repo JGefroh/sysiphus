@@ -42,3 +42,4 @@ CPU_IDLE=$(get_cpu_idle)
 RAM_USED_IN_BYTES=$(get_ram_used_in_bytes)
 RAM_FREE_IN_BYTES=$(get_ram_free_in_bytes)
 contact $DISK_USED_IN_BYTES $DISK_FREE_IN_BYTES $CPU_IDLE $RAM_USED_IN_BYTES $RAM_FREE_IN_BYTES
+exit 0
