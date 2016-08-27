@@ -87,9 +87,8 @@
           labels: []
         };
       }
-      measurements[type].data = measurements[type].data.concat(newMeasurements[type].data);
-      angular.forEach(newMeasurements[type].data, function(point) {
-        measurements[type].data.push(point);
+      angular.forEach(newMeasurements[type].data[0], function(point) {
+        measurements[type].data[0].push(point);
       });
       angular.forEach(newMeasurements[type].labels, function(point) {
         measurements[type].labels.push(point);
