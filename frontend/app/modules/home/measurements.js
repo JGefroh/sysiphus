@@ -11,7 +11,7 @@
         var labelStringY;
         var max;
         var stepSize;
-        if (chartFor === 'cpu_idle') {
+        if (chartFor === 'cpu_used') {
           labelStringY = 'Used CPU (%)';
           max = 100;
           stepSize = 100  / 10;

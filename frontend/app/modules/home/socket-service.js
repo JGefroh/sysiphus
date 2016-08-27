@@ -70,7 +70,7 @@
             return match.measurements = newMeasurements;
           }
           else {
-            combine(match.measurements, newMeasurements, 'cpu_idle');
+            combine(match.measurements, newMeasurements, 'cpu_used');
             combine(match.measurements, newMeasurements, 'disk_used');
             combine(match.measurements, newMeasurements, 'disk_total');
             combine(match.measurements, newMeasurements, 'ram_used');
@@ -137,7 +137,7 @@
       var disk_used = processData(data, 'disk_used_in_bytes', function(value) {
         return (value / 1000 / 1000 / 1000).toFixed(2)
       });
-      var cpu_idle = processData(data, 'cpu_idle_percentage', function(value) {
+      var cpu_used = processData(data, 'cpu_idle_percentage', function(value) {
         return (100 - value).toFixed(2);
       });
       var disk_total = processData(data, 'disk_total_in_bytes', function(value) {
@@ -152,7 +152,7 @@
       return {
         disk_used: disk_used,
         disk_total: disk_total,
-        cpu_idle: cpu_idle,
+        cpu_used: cpu_used,
         ram_used: ram_used,
         ram_total: ram_total
       };
