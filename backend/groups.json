@@ -26,6 +26,22 @@
         ]
       },
       {
+        "id": 10000,
+        "name": "Dokku Droplet - 1GB",
+        "icon": "fa-server",
+        "url": "http://138.68.18.27",
+        "verification": "market",
+        "applications": [
+          {
+            "id": 10001,
+            "name": "To the Farmer's Market",
+            "url": "https://grats.io",
+            "sourceUrl": "https://github.com/jgefroh/ttfm",
+            "verification": "ttfm"
+          }
+        ]
+      },
+      {
         "id": 3000,
         "name": "Ubuntu Droplet",
         "icon": "fa-server",
