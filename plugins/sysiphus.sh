@@ -22,8 +22,8 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     get_cpu_idle() {  top -b -n1 | grep "Cpu(s)" | awk '{ print $8 }'; }
     get_disk_free_in_bytes() { df --block-size=512 -P . | tail -1  | awk '{print $4 * 512}'; }
     get_disk_used_in_bytes() { df --block-size=512 -P . | tail -1 | awk '{print $3 * 512}'; }
-    get_ram_used_in_bytes() { free -b | grep Mem  |  awk '{print $3}'; }
-    get_ram_free_in_bytes() { free -b | grep Mem  |  awk '{print $4}'; }
+    get_ram_used_in_bytes() { free -b | grep cache: |  awk '{print $3}'; }
+    get_ram_free_in_bytes() { free -b | grep cache: |  awk '{print $4}'; }
 else
     get_cpu_idle() { echo '-1'; }
 fi
