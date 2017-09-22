@@ -19,7 +19,6 @@ RUN npm install
 COPY ./frontend/bower.json /sysiphus/frontend/bower.json
 WORKDIR /sysiphus/frontend/
 RUN bower install --allow-root
-RUN brunch build --production
 
 COPY ./backend/package.json /sysiphus/backend/package.json
 WORKDIR /sysiphus/backend/
@@ -27,5 +26,8 @@ RUN npm install
 
 COPY . /sysiphus
 
+WORKDIR /sysiphus/frontend/
+RUN brunch build --production
 
+WORKDIR /sysiphus/backend/
 ENTRYPOINT ["npm", "start"]
