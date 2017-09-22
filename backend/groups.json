@@ -4,17 +4,17 @@
     "servers": [
       {
         "id": 5000,
-        "name": "Dokku Droplet",
+        "name": "Docker Droplet",
         "icon": "fa-server",
-        "url": "http://138.68.18.27",
-        "verification": "Chatterize",
+        "url": "198.199.103.100",
+        "verification": "Joseph Gefroh",
         "applications": [
           {
-            "id": 5002,
-            "name": "Chatterize",
-            "url": "http://chatterize.jgefroh.com",
-            "sourceUrl": "https://github.com/jgefroh/chatterize",
-            "verification": "Chatterize"
+            "id": 4001,
+            "name": "ToDoList",
+            "url": "http://todolist.jgefroh.com",
+            "sourceUrl": "https://github.com/jgefroh/todolist",
+            "verification": "ToDoList"
           },
           {
             "id": 5001,
@@ -22,72 +22,14 @@
             "url": "http://sysiphus.jgefroh.com",
             "sourceUrl": "https://github.com/jgefroh/sysiphus",
             "verification": "Sysiphus"
-          }
-        ]
-      },
-      {
-        "id": 10000,
-        "name": "Dokku Droplet - 1GB",
-        "icon": "fa-server",
-        "url": "http://138.68.18.27",
-        "verification": "market",
-        "applications": [
-          {
-            "id": 10001,
-            "name": "To the Farmer's Market",
-            "url": "https://grats.io",
-            "sourceUrl": "https://github.com/jgefroh/ttfm",
-            "verification": "ttfm"
-          }
-        ]
-      },
-      {
-        "id": 3000,
-        "name": "Ubuntu Droplet",
-        "icon": "fa-server",
-        "url": "http://107.170.244.120",
-        "verification": "ToDoList",
-        "applications": [
-          {
-            "id": 4001,
-            "name": "ToDoList (Frontend)",
-            "url": "http://todolist.jgefroh.com",
-            "sourceUrl": "https://github.com/jgefroh/todolist",
-            "verification": "ToDoList"
           },
-          {
-            "id": 4000,
-            "name": "ToDoList (Backend)",
-            "url": "http://todolist.jgefroh.com/rest/security",
-            "sourceUrl": "https://github.com/jgefroh/todolist",
-            "verification": ""
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "name": "Bluehost",
-    "servers": [
-      {
-        "id": 6000,
-        "name": "Bluehost Web Server",
-        "icon": "fa-desktop",
-        "url": "http://jgefroh.com",
-        "sysiphus": {
-          "url": "http://jgefroh.com/sysiphus.php",
-          "updateMode": "REACH_OUT",
-          "updateFrequencyInMs": 300000
-        },
-        "verification": "Caroline Paulic",
-        "applications": [
           {
             "id": 6000,
             "name": "JGefroh.com",
             "url": "http://jgefroh.com",
             "sysiphusUrl": "http://jgefroh.com/sysiphus.php",
             "sourceUrl": "https://github.com/jgefroh/jgefroh-website",
-            "verification": "Caroline Paulic"
+            "verification": "Joseph Gefroh"
           },
           {
             "id": 6100,
@@ -111,7 +53,7 @@
             "icon": "fa-desktop",
             "url": "http://serenity.jgefroh.com",
             "sourceUrl": "https://github.com/jgefroh/serenity",
-            "verification": "serenity"
+            "verification": "Serenity"
           },
           {
             "id": 9000,
@@ -120,6 +62,38 @@
             "url": "http://palette.jgefroh.com",
             "sourceUrl": "https://github.com/jgefroh/palette",
             "verification": "Palette"
+          }
+        ]
+      },
+      {
+        "id": 5000,
+        "name": "Dokku Droplet",
+        "icon": "fa-server",
+        "url": "http://138.68.18.27",
+        "verification": "Chatterize",
+        "applications": [
+          {
+            "id": 5002,
+            "name": "Chatterize",
+            "url": "http://chatterize.jgefroh.com",
+            "sourceUrl": "https://github.com/jgefroh/chatterize",
+            "verification": "Chatterize"
+          }
+        ]
+      },
+      {
+        "id": 10000,
+        "name": "Dokku Droplet - 1GB",
+        "icon": "fa-server",
+        "url": "http://138.68.18.27",
+        "verification": "market",
+        "applications": [
+          {
+            "id": 10001,
+            "name": "To the Farmer's Market",
+            "url": "https://ttfm.jgefroh.com",
+            "sourceUrl": "https://github.com/jgefroh/ttfm",
+            "verification": "ttfm"
           }
         ]
       }
