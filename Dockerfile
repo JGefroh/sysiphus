@@ -1,4 +1,4 @@
-ROM mhart/alpine-node:6.11.3
+FROM mhart/alpine-node:6.11.3
 RUN apk add --no-cache \
     bash \
     curl \
@@ -11,13 +11,21 @@ RUN apk add --no-cache \
 
 RUN npm install -g bower
 RUN npm install -g brunch
-COPY . /sysiphus
 
+COPY ./frontend/package.json /sysiphus/frontend/package.json
 WORKDIR /sysiphus/frontend/
 RUN npm install
+
+COPY ./frontend/bower.json /sysiphus/frontend/bower.json
+WORKDIR /sysiphus/frontend/
 RUN bower install --allow-root
 RUN brunch build --production
 
+COPY ./backend/package.json /sysiphus/backend/package.json
 WORKDIR /sysiphus/backend/
 RUN npm install
+
+COPY . /sysiphus
+
+
 ENTRYPOINT ["npm", "start"]
