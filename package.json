@@ -2,8 +2,5 @@
     "name": "sysiphus",
     "version": "0.0.0",
     "description": "Entry point for app to run stuff.",
-    "scripts": {
-        "start": "cd frontend && npm i && npm start && cd ../backend && npm i && npm start"
-    },
     "author": "Joseph Gefroh"
 }
