@@ -6,7 +6,7 @@
         "id": 5000,
         "name": "Docker Droplet",
         "icon": "fa-server",
-        "url": "198.199.103.100",
+        "url": "http://198.199.103.100",
         "verification": "Joseph Gefroh",
         "applications": [
           {
