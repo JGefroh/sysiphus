@@ -1,0 +1,18 @@
+version: '2'
+services:
+  web:
+    depends_on:
+       - db
+    build: './source/sysiphus'
+    ports:
+     - "7000:7000"
+    env_file:
+     - web.env
+  db:
+    image: postgres
+    volumes:
+      - ./mounts/db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: <PG_USER>
+      POSTGRES_PASSWORD: <PG_PASSWORD>
+      POSTGRES_DB: sysiphus_prod
