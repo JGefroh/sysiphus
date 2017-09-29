@@ -94,7 +94,7 @@ function fetchMeasurements(client, server) {
   var data = [];
   knex('measurements').where({
     server_id: server.id
-  }).orderBy('created_at', 'desc').limit(100).map(function(row) {
+  }).orderBy('created_at', 'asc').limit(100).map(function(row) {
     data.push(row);
   }).then(function() {
     if (data.length) {
