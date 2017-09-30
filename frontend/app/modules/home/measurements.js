@@ -18,12 +18,16 @@
         }
         else if (chartFor === 'disk_used') {
           labelStringY = 'Used Disk Space (GB)';
-          max = Number(vm.measurements.disk_total.data[0][vm.measurements.disk_total.data[0].length - 1]);
+          max = vm.measurements.disk_total.data[0].reduce(function(a, b) {
+            return Math.max(Number(a), Number(b));
+          });
           stepSize = vm.measurements.disk_total.data[0][vm.measurements.disk_total.data[0].length - 1]  / 10;
         }
         else if (chartFor === 'ram_used') {
           labelStringY = 'Used RAM (GB)';
-          max = Number(vm.measurements.ram_total.data[0][vm.measurements.ram_total.data[0].length - 1]);
+          max = vm.measurements.ram_total.data[0].reduce(function(a, b) {
+            return Math.max(Number(a), Number(b));
+          });
           stepSize = vm.measurements.ram_total.data[0][vm.measurements.ram_total.data[0].length - 1]  / 10;
         }
         var chartOptions = {
