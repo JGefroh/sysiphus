@@ -14,21 +14,21 @@
         if (chartFor === 'cpu_used') {
           labelStringY = 'Used CPU (%)';
           max = 100;
-          stepSize = 100  / 10;
+          stepSize = 100 / 10;
         }
         else if (chartFor === 'disk_used') {
           labelStringY = 'Used Disk Space (GB)';
           max = vm.measurements.disk_total.data[0].reduce(function(a, b) {
             return Math.max(Number(a), Number(b));
           });
-          stepSize = vm.measurements.disk_total.data[0][vm.measurements.disk_total.data[0].length - 1]  / 10;
+          stepSize = max / 10;
         }
         else if (chartFor === 'ram_used') {
           labelStringY = 'Used RAM (GB)';
           max = vm.measurements.ram_total.data[0].reduce(function(a, b) {
             return Math.max(Number(a), Number(b));
           });
-          stepSize = vm.measurements.ram_total.data[0][vm.measurements.ram_total.data[0].length - 1]  / 10;
+          stepSize = max / 10;
         }
         var chartOptions = {
           scales: {
