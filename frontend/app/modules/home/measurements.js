@@ -38,7 +38,7 @@
                 ticks: {
                   callback: function(dataLabel, index) {
                     if (index % 5 === 0) {
-                      return $filter('date')(new Date(dataLabel), 'MMM dd - hh:mm')
+                      return $filter('date')(new Date(dataLabel), 'MMM dd - HH:mm')
                     }
                     else {
                       return null;
