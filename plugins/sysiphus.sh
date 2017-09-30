@@ -1,6 +1,7 @@
 #!/bin/bash
 HOST=$1
 PROJECT=$2
+LINUX=$3
 if [ -z "${HOST}" ]; then
   echo 'A Sysiphus host must be provided when running the script. eg.\n\t./sysiphus.sh http://sysiphus.example.com 1234'
   exit -1;
@@ -10,7 +11,13 @@ elif [ -z "${PROJECT}" ]; then
 fi
 started() { echo "Sending sysiphus update to: $HOST"; }
 
-if [ "$(uname)" == "Darwin" ]; then
+if [ $LINUX="generic"  ]; then
+    get_cpu_idle() {  top -b -n1 | grep "Cpu(s)" | awk '{ print $8 }'; }
+    get_disk_free_in_bytes() { df --block-size=512 -P . | tail -1  | awk '{print $4 * 512}'; }
+    get_disk_used_in_bytes() { df --block-size=512 -P . | tail -1 | awk '{print $3 * 512}'; }
+    get_ram_used_in_bytes() { free -b | grep total -A1 | tail -n 1 | awk '{print $2}'; }
+    get_ram_free_in_bytes() { free -b | grep total -A1 | tail -n 1 | awk '{print $3}'; }
+elif [ "$(uname)" == "Darwin" ]; then
     # Do something under Mac OS X platform
     get_cpu_idle() { top -l 5 | head -n 4 | tail -1 | awk '{ print $7}' | sed 's/%//'; }
     get_disk_free_in_bytes() { df -P . | tail -1  | awk '{print $4 * 512}'; }
