@@ -14,17 +14,21 @@
         if (chartFor === 'cpu_used') {
           labelStringY = 'Used CPU (%)';
           max = 100;
-          stepSize = 100  / 10;
+          stepSize = 100 / 10;
         }
         else if (chartFor === 'disk_used') {
           labelStringY = 'Used Disk Space (GB)';
-          max = Number(vm.measurements.disk_total.data[0][vm.measurements.disk_total.data[0].length - 1]);
-          stepSize = vm.measurements.disk_total.data[0][vm.measurements.disk_total.data[0].length - 1]  / 10;
+          max = vm.measurements.disk_total.data[0].reduce(function(a, b) {
+            return Math.max(Number(a), Number(b));
+          });
+          stepSize = max / 10;
         }
         else if (chartFor === 'ram_used') {
           labelStringY = 'Used RAM (GB)';
-          max = Number(vm.measurements.ram_total.data[0][vm.measurements.ram_total.data[0].length - 1]);
-          stepSize = vm.measurements.ram_total.data[0][vm.measurements.ram_total.data[0].length - 1]  / 10;
+          max = vm.measurements.ram_total.data[0].reduce(function(a, b) {
+            return Math.max(Number(a), Number(b));
+          });
+          stepSize = max / 10;
         }
         var chartOptions = {
           scales: {
@@ -38,7 +42,7 @@
                 ticks: {
                   callback: function(dataLabel, index) {
                     if (index % 5 === 0) {
-                      return $filter('date')(new Date(dataLabel), 'MMM dd - hh:mm')
+                      return $filter('date')(new Date(dataLabel), 'MMM dd - HH:mm')
                     }
                     else {
                       return null;
