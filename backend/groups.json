@@ -7,7 +7,7 @@
         "name": "Docker Droplet",
         "icon": "fa-server",
         "url": "http://198.199.103.100",
-        "verification": "198.199.103.100",
+        "verification": "301 Moved Permanently",
         "applications": [
           {
             "id": 4001,
@@ -29,7 +29,7 @@
             "url": "http://jgefroh.com",
             "sysiphusUrl": "http://jgefroh.com/sysiphus.php",
             "sourceUrl": "https://github.com/jgefroh/jgefroh-website",
-            "verification": "jgefroh"
+            "verification": "301 Moved Permanently"
           },
           {
             "id": 6100,
